@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Your verification code</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        padding: 24px;
+      }
+      .container {
+        max-width: 480px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 24px;
+        border: 1px solid #e5e5e5;
+      }
+      h1 {
+        font-size: 22px;
+        margin-bottom: 8px;
+      }
+      .otp-box {
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: 4px;
+        padding: 12px 16px;
+        border-radius: 6px;
+        background-color: #f0f4ff;
+        display: inline-block;
+        margin: 16px 0;
+      }
+      p {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #333333;
+      }
+      .footer {
+        margin-top: 24px;
+        font-size: 12px;
+        color: #777777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Hello <%= name %>,</h1>
+
+      <p>
+        Use the verification code below to complete your action on
+        <strong>eShop</strong> (sign up, log in, or reset your password).
+      </p>
+
+      <div class="otp-box">
+        <%= otp %>
+      </div>
+
+      <p>
+        This code will expire in <strong>5 minutes</strong>. If you do not use it
+        within that time, you will need to request a new code.
+      </p>
+
+      <div class="footer">
+        <p>
+          Thanks,<br />
+          The eShop Team 
+          <!-- need to change that eshop -->
+        </p>
+        <p>
+          Please do not reply directly to this email. This inbox is not
+          monitored.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
+
