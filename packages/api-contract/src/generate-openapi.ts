@@ -3,12 +3,12 @@ import {
   OpenAPIRegistry,
   OpenApiGeneratorV3,
 } from "@asteasolutions/zod-to-openapi"; // this translate the zod schema to openapi schema, it takes the zod schema and generates the openapi document from it, we will use this to generate the openapi document from our api contracts
-import { registerContract } from "./auth/register.js";
-import { verifyContract } from "./auth/verify.js";
-import { loginContract } from "./auth/login.js";
-import { forgetPasswordContract } from "./auth/forgetPassword.js";
-import { verifyForgetPasswordOtpContract } from "./auth/verifyForgetPasswordOtp.js";
-import { resetPasswordContract } from "./auth/resetPassword.js";
+import { registerContract } from "./auth/register";
+import { verifyContract } from "./auth/verify";
+import { loginContract } from "./auth/login";
+import { forgetPasswordContract } from "./auth/forgetPassword";
+import { verifyForgetPasswordOtpContract } from "./auth/verifyForgetPasswordOtp";
+import { resetPasswordContract } from "./auth/resetPassword";
 
 // create registry
 const registry = new OpenAPIRegistry(); //registry contain all apis, it's like a container for all the api contracts, we will register all the api contracts in this registry and then generate the openapi document from this registry

@@ -1,4 +1,4 @@
-import {z} from "zod";
+import { z } from "zod";
 
 export const resetPasswordContract = {
   method: "post",
@@ -14,3 +14,5 @@ export const resetPasswordContract = {
     message: z.string(),
   }),
 };
+
+export type ResetPasswordBody = z.infer<typeof resetPasswordContract.body>;
