@@ -1,4 +1,4 @@
-import {z} from "zod";
+import { z } from "zod";
 
 export const loginContract = {
   method: "post",
@@ -12,3 +12,5 @@ export const loginContract = {
     message: z.string(),
   }),
 };
+
+export type LoginBody = z.infer<typeof loginContract.body>;

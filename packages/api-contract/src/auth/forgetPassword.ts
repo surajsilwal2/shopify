@@ -1,4 +1,5 @@
-import {z} from "zod";
+import { z } from "zod";
+
 
 export const forgetPasswordContract = {
   method: "post",
@@ -11,3 +12,5 @@ export const forgetPasswordContract = {
     message: z.string(),
   }),
 };
+
+export type ForgetPasswordBody = z.infer<typeof forgetPasswordContract.body>;

@@ -1,10 +1,13 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "noEmit": true, // Next.js handles the emit
     "outDir": "dist",
     "strict": false,
     "esModuleInterop": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"]
 }

@@ -1,2 +1,2 @@
-export * from './auth/index.js'
-export * from './generate-openapi.js'
+export * from './auth/index'
+// export * from './generate-openapi'

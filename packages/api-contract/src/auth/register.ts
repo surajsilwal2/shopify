@@ -17,3 +17,5 @@ export const registerContract = {
   })
 }
 
+export type RegisterBody = z.infer<typeof registerContract.body>;
+
