@@ -17,7 +17,7 @@ export const useLogin = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { name: string; email: string }) => login(data),
+    mutationFn: (data: { email: string, password: string }) => login(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] }); // querykey is used to cache data in browser's memory so we don't have to ask what is the data, everytime we reload or fetch same data
       toast.success("Welcome back!");
