@@ -49,7 +49,13 @@ const VerifyResetOtpPage = () => {
   useEffect(() => {
     // Grab the email we saved on the previous 'Forgot Password' page
     const resetEmail = sessionStorage.getItem("resetEmail") || "";
+
+    // 1. Set the local state
     setEmail(resetEmail);
+
+    // 2. Set the FORM state directly using the variable, NOT the 'email' state
+    // This is the key fix:
+    setValue("email", resetEmail, { shouldValidate: true });
 
     // If we have an email, check if there's a countdown currently running in LocalStorage
     if (resetEmail) {
@@ -63,7 +69,7 @@ const VerifyResetOtpPage = () => {
 
     // Auto-focus the first box so the user can start typing immediately
     inputRefs.current[0]?.focus();
-  }, []);
+  }, [setValue]);
 
   /**
    * THE TICKER: Re-calculates the remaining time every 1 second.

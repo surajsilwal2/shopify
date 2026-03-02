@@ -49,7 +49,7 @@ const SignupPage = () => {
 
   const onSubmit = (data: signupForm) => {
     (sessionStorage.setItem("pendingPassword", data.password),
-      register({ name: data.name, email: data.email }));
+      register({ name: data.name, email: data.email, password: data.password }));
   };
  return (
    <AuthLayout

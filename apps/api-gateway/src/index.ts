@@ -10,7 +10,7 @@ app.use(express.urlencoded({ limit: '100mb', extended: true }))
 app.use(morgan("dev"));
 
 app.use(cors({
-    origin: 'http://localhost:3001',
+    origin: 'http://localhost:3000',
     allowedHeaders: ['Authorization', 'Content-Type'],
     credentials: true
 }))

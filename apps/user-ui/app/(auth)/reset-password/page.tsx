@@ -14,7 +14,7 @@ import { AuthButton } from "@/components/shared/auth/auth-button";
 
 /**
  * EXTENDING THE SCHEMA:
- * We take the 'body' from your contract (which only has email/password)
+ * We take the 'body' from  contract (which only has email/password)
  * and add 'confirmPassword' for frontend validation.
  *
  * .omit({ email: true }) is used because the user doesn't type their email here;
@@ -41,26 +41,35 @@ const ResetPasswordPage = () => {
    * We pull the email from sessionStorage so the API knows WHICH user
    * is changing their password.
    */
-  useEffect(() => {
-    setEmail(sessionStorage.getItem("resetEmail") || "");
-  }, []);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<ResetForm>({
     resolver: zodResolver(resetSchema),
   });
+
+  // 2. Sync email into the form state immediately
+  useEffect(() => {
+    const savedEmail = sessionStorage.getItem("resetEmail") || "";
+    setEmail(savedEmail)
+    // This tells React Hook Form that the email field is filled
+    setValue("email", savedEmail, { shouldValidate: true });
+  }, [setValue]);
 
   /**
    * SUBMIT HANDLER:
    * We destructure 'newPassword' out of the validated data.
    * 'confirmPassword' is discarded here because the Backend API doesn't want it.
    */
-  const onSubmit = ({ newPassword }: ResetForm) => {
-    resetPassword({ email, newPassword });
-  };
+ const onSubmit = (data: ResetForm) => {
+   resetPassword({
+     email: data.email,
+     newPassword: data.newPassword,
+   });
+ };
 
   return (
     <AuthLayout
@@ -107,6 +116,6 @@ const ResetPasswordPage = () => {
       </form>
     </AuthLayout>
   );
-};
+};;
 
 export default ResetPasswordPage;
