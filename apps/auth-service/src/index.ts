@@ -7,9 +7,12 @@ import router from "./routes/auth-route.js";
 import SwaggerUi from "swagger-ui-express"
 // @ts-ignore: allow importing JSON from api-contract package without types
 import openapi from "@repo/api-contract/openapi.json";
+import { initSessionCleanup } from "./jobs/session-cleanup.js";
 
 
 const app = express();
+// Start the cron job
+initSessionCleanup();
 
 app.use(
   cors({

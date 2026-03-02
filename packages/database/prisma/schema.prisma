@@ -31,7 +31,7 @@ model Session {
   id           String  @id @default(auto()) @map("_id") @db.ObjectId
   refreshToken String @unique
   user         User?   @relation(fields: [userId], references: [id])
-  userId       String? @unique @db.ObjectId
+  userId       String? @db.ObjectId
   userAgent    String?
   expiresAt    DateTime
   createdAt    DateTime  @default(now())

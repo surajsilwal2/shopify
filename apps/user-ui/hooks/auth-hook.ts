@@ -33,9 +33,11 @@ export const useLogin = () => {
 export const useRegister = () => {
   const router = useRouter();
   return useMutation({
-    mutationFn: (data: { name: string; email: string }) => register(data),
-    onSuccess: (_, variables) => {
+    mutationFn: (data: { name: string; email: string, password: string }) => register(data),
+    onSuccess: (response, variables) => {
       toast.success("OTP sent! Check your email.");
+        console.log("register response:", response); // check what comes back
+        console.log("register variables:", variables);
 
       //store the data in session storage. because session storage only keep info until the tab is closed and retreving data from session is fast
       sessionStorage.setItem("pendingName", variables.name);
@@ -114,6 +116,8 @@ export function useResetPassword() {
     onSuccess: () => {
       toast.success("Password reset! Please log in.");
       sessionStorage.removeItem("resetEmail");
+      localStorage.clear();
+      sessionStorage.clear();
       router.push("/login");
     },
     onError: (error: any) => {

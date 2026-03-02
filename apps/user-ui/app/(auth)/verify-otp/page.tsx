@@ -29,14 +29,24 @@ const VerifyOtpPage = () => {
     formState: { errors },
   } = useForm<VerifyBody>({
     resolver: zodResolver(verifyContract.body),
+    defaultValues: { otp: "" },
   });
 
   // Hydrate session data + restore timer now that email is available
   useEffect(() => {
     const pendingEmail = sessionStorage.getItem("pendingEmail") || "";
+    const pendingName = sessionStorage.getItem("pendingName") || "";
+    const pendingPassword = sessionStorage.getItem("pendingPassword") || "";
+
     setEmail(pendingEmail);
-    setName(sessionStorage.getItem("pendingName") || "");
-    setPassword(sessionStorage.getItem("pendingPassword") || "");
+    setName(pendingName);
+    setPassword(pendingPassword);
+
+    // --- ADD THESE LINES TO SYNC THE FORM STATE ---
+    setValue("email", pendingEmail);
+    setValue("name", pendingName);
+    setValue("password", pendingPassword);
+    // ----------------------------------------------
 
     // Restore persisted cooldown using the per-email key
     if (pendingEmail) {
@@ -54,7 +64,7 @@ const VerifyOtpPage = () => {
     }
 
     inputRefs.current[0]?.focus();
-  }, []);
+  }, [setValue]);
 
   // Tick — derived from expiry timestamp to avoid drift
   useEffect(() => {
@@ -106,7 +116,7 @@ const VerifyOtpPage = () => {
 
   const handleResend = () => {
     if (!email || !name || timeLeft > 0) return;
-    resend({ name, email });
+    resend({ name, email, password });
     const expiry = Date.now() + COOLDOWN_SECONDS * 1000;
     localStorage.setItem(getExpiryKey(email), expiry.toString());
     setTimeLeft(COOLDOWN_SECONDS);
