@@ -15,14 +15,15 @@ import {
 
 import { createRoute } from "../lib/createRoute.js";
 import {
-  loginContract,
-  registerContract,
-  verifyContract,
-  forgetPasswordContract,
-  verifyForgetPasswordOtpContract,
-  resetPasswordContract,
+ 
 } from "@repo/api-contract";
 import { isAuthenticated } from "../../../../packages/shared/src/middleware/isAuthenticated.js";
+import { registerContract } from "@repo/api-contract/auth/register";
+import { verifyContract } from "@repo/api-contract/auth/verify";
+import { loginContract } from "@repo/api-contract/auth/login";
+import { forgetPasswordContract } from "@repo/api-contract/auth/forgetPassword";
+import { verifyForgetPasswordOtpContract } from "@repo/api-contract/auth/verifyForgetPasswordOtp";
+import { resetPasswordContract } from "@repo/api-contract/auth/resetPassword";
 
 const router: Router = express.Router();
 

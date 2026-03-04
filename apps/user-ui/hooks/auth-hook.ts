@@ -2,6 +2,7 @@ import {
   forgotPassword,
   getMe,
   login,
+  logout,
   register,
   resetPassword,
   verifyForgotPasswordOtp,
@@ -133,4 +134,20 @@ export function useMe() {
     queryFn: () => getMe().then((r) => r.data),
     retry: false,
   });
+}
+
+// ─── Logout ───────────────────────────────────────────────────────────────────
+export function useLogout() {
+ const queryClient = useQueryClient();
+  const router = useRouter();
+  return useMutation({
+    mutationFn: () => logout(),
+    onSettled: () => {
+      // Runs on both success AND error
+      // queryClient.removeQueries on logout is important — without it, the cached user data stays in memory and the header still shows the user's name until the cache expires.
+      queryClient.removeQueries({ queryKey: ["me"] });
+      router.push("/login");
+    }
+  })
+
 }
