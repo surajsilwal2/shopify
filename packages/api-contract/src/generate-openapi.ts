@@ -9,6 +9,7 @@ import { loginContract } from "./auth/login";
 import { forgetPasswordContract } from "./auth/forgetPassword";
 import { verifyForgetPasswordOtpContract } from "./auth/verifyForgetPasswordOtp";
 import { resetPasswordContract } from "./auth/resetPassword";
+import { createShopContract, sellerLoginContract, sellerRegisterContract, sellerVerifyContract } from "./seller";
 
 // create registry
 const registry = new OpenAPIRegistry(); //registry contain all apis, it's like a container for all the api contracts, we will register all the api contracts in this registry and then generate the openapi document from this registry
@@ -43,6 +44,41 @@ function register(contract: any) {
           }
         }
       }
+    }
+  })
+}
+
+function sellerRegister(contract: any) {
+  registry.registerPath({
+    method: contract.method,
+    path: contract.path,
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: contract.body,
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "Successful response",
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      },
+
+      400: {
+        description: 'Bad request',
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      },
     }
   })
 }
@@ -88,8 +124,82 @@ function verify(contract: any) {
     }
   })
 }
+function sellerVerify(contract: any) {
+  registry.registerPath({
+    method: contract.method,
+    path: contract.path,
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: contract.body
+          }
+        }
+      }
+    },
+    responses: {
+      200: {
+        description: "Successful verify response",
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      },
+      201: {
+        description: 'Sucessfully seller registered',
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      }, 
+      400: {
+        description: 'Bad request',
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      }
+    }
+  })
+}
 
 function login(contract: any) {
+  registry.registerPath({
+    method: contract.method,
+    path: contract.path,
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: contract.body
+          }
+        }
+      }
+    },
+    responses: {
+      200: {
+        description: "Successful login response",
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      },
+      400: {
+        description: 'Bad request',
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      }
+    }
+  })
+}
+function sellerLogin(contract: any) {
   registry.registerPath({
     method: contract.method,
     path: contract.path,
@@ -225,12 +335,50 @@ function resetPassword(contract: any) {
   })
 }
 
+function createShop(contract: any) {
+  registry.registerPath({
+    method: contract.method,
+    path: contract.path,
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: contract.body,
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: "Successful shop creation response",
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      },
+      400: {
+        description: 'Bad request',
+        content: {
+          "application/json": {
+            schema: contract.response
+          }
+        }
+      }
+    }
+  })
+}
+
 register(registerContract)
+sellerRegister(sellerRegisterContract)
 verify(verifyContract)
+sellerVerify(sellerVerifyContract)
 login(loginContract)
+sellerLogin(sellerLoginContract)
 forgetPassword(forgetPasswordContract)
 verifyForgetPasswordOtp(verifyForgetPasswordOtpContract)
 resetPassword(resetPasswordContract)
+createShop(createShopContract)
 
 
 const generator = new OpenApiGeneratorV3(registry.definitions); // convert registry to openapi document, it takes the registry and generates the openapi document from it
