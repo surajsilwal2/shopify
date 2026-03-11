@@ -1,4 +1,4 @@
 {
   "extends": "../../packages/typescript-config/base.json",
-  "include": ["src", "../../packages/shared/src/middleware"]
+  "include": ["src", "../../packages/shared/src/middleware", "../../packages/shared/src/types/**/*.d.ts"]
 }

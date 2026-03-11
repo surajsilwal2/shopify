@@ -28,12 +28,69 @@ model User {
 }
 
 model Session {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  refreshToken String @unique
-  user         User?   @relation(fields: [userId], references: [id])
-  userId       String? @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  refreshToken String   @unique
+  user         User?    @relation(fields: [userId], references: [id])
+  userId       String?  @db.ObjectId
   userAgent    String?
   expiresAt    DateTime
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Seller {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String          @unique
+  phone     String
+  country   String
+  password  String
+  stripeId  String? // filled after Stripe onboarding in step 3
+  shop      Shop? // one seller has one shop (for now)
+  sessions  SellerSession[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model Shop {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  bio          String?
+  category     String
+  avatar       String?
+  coverBanner  String?
+  address      String?
+  openingHours String?
+  website      String?
+  socialLinks  String[]
+  rating       Float        @default(0)
+  seller       Seller       @relation(fields: [sellerId], references: [id])
+  sellerId     String       @unique @db.ObjectId
+  reviews      ShopReview[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model ShopReview {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating    Int
+  review    String
+  shop      Shop     @relation(fields: [shopId], references: [id])
+  shopId    String   @db.ObjectId
+  // userId is a string reference only — no direct relation across models in MongoDB
+  // This is intentional: User and Seller live in separate logical domains
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SellerSession {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  refreshToken String   @unique
+  seller       Seller   @relation(fields: [sellerId], references: [id])
+  sellerId     String   @db.ObjectId
+  userAgent    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

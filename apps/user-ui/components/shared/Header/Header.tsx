@@ -80,9 +80,12 @@ export default function Header() {
   const userMenuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      // 2. Check if our Box (ref) exists AND if it DOES NOT contain the clicked thing
       if (
         userMenuRef.current &&
-        !userMenuRef.current.contains(e.target as Node)
+        !userMenuRef.current.contains(
+          e.target as Node, // 1. Identify what was clicked (the Target))
+        )
       ) {
         setUserMenuOpen(false);
       }

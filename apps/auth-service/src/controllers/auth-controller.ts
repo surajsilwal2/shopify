@@ -16,16 +16,7 @@ import jwt from "jsonwebtoken";
 import { setCookie } from "../utils/setCookie.js";
 import { prisma } from "database";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        userId: string;
-        role: string;
-      };
-    }
-  }
-}
+
 
 export const userRegistration = async (
   req: Request,
