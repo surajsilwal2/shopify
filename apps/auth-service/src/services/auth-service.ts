@@ -20,8 +20,8 @@ export const validateRegister = async (data: any, userType: 'user' | 'seller') =
      }
 }
 
-export const checkOtpRestriction = async (email: string) => {
-    const base = `otp:${email}`
+export const checkOtpRestriction = async (email: string,  prefix: string = "user") => {
+    const base = `otp:${prefix}:${email}`;
 
     const attempts = Number(await redis.get(`${base}:attempts`)) || 0
     if (attempts >= 3) {
@@ -33,39 +33,38 @@ export const checkOtpRestriction = async (email: string) => {
     }
 }
 
-export const trackOtpRequests = async (email: string) => {
-    const base = `otp:${email}`
+export const trackOtpRequests = async (email: string, prefix: string = "user") => {
+  const base = `otp:${prefix}:${email}`;
 
-    const coolDown = await redis.get(`${base}:cooldown`)
-    if (coolDown) { 
-        throw new ValidationError("OTP recently sent. Please wait 1 min before requesting again.");
-    }
-       let sendCounts = Number(await redis.get(`${base}:sendCounts`)) || 0;
-       if (sendCounts >= 5) {
-         throw new ValidationError(
-           "Too many OTP requests. Try again in 1 hour.",
-         );
-    }
-    sendCounts++
-    if (sendCounts === 1) {
-        await redis.set(`${base}:sendCounts`, '1', 'EX', 3600) // 1 hour expiry
-    } else {
-        await redis.incr(`${base}:sendCounts`) // No need to reset expiry on each increment, it will auto-expire after 1 hour from the first request
-    }
+  const coolDown = await redis.get(`${base}:cooldown`);
+  if (coolDown) {
+    throw new ValidationError(
+      "OTP recently sent. Please wait 1 min before requesting again.",
+    );
+  }
+  let sendCounts = Number(await redis.get(`${base}:sendCounts`)) || 0;
+  if (sendCounts >= 5) {
+    throw new ValidationError("Too many OTP requests. Try again in 1 hour.");
+  }
+  sendCounts++;
+  if (sendCounts === 1) {
+    await redis.set(`${base}:sendCounts`, "1", "EX", 3600); // 1 hour expiry
+  } else {
+    await redis.incr(`${base}:sendCounts`); // No need to reset expiry on each increment, it will auto-expire after 1 hour from the first request
+  }
 
-    await redis.set(`${base}:cooldown`, '1', 'EX', 60) // 1 min cooldown
+  await redis.set(`${base}:cooldown`, "1", "EX", 60); // 1 min cooldown
+};
 
-}
-
-export const sendOtp = async (name: string, email: string,) => {
-    const base = `otp:${email}`
+export const sendOtp = async (name: string, email: string, prefix:string = 'user') => {
+    const base = `otp:${prefix}:${email}`
     const otp = crypto.randomInt(100000, 999999).toString();
     await sendEmail(name, email, otp);
     await redis.set(`${base}:otp`, otp, 'EX', 300); // 5 min expiry
 }
 
-export const verifyOtp = async (email: string, otp: string) => {
-  const base = `otp:${email}`;
+export const verifyOtp = async (email: string, otp: string, prefix:string = 'user') => {
+  const base = `otp:${prefix}:${email}`;
   const storedOtp = await redis.get(`${base}:otp`);
   if (!storedOtp) {
     throw new ValidationError(

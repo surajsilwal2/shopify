@@ -8,6 +8,7 @@ import SwaggerUi from "swagger-ui-express"
 // @ts-ignore: allow importing JSON from api-contract package without types
 import openapi from "@repo/api-contract/openapi.json";
 import { initSessionCleanup } from "./jobs/session-cleanup.js";
+import sellerAuthRouter from "./routes/seller-auth-routes.js"; 
 
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/docs", SwaggerUi.serve, SwaggerUi.setup(openapi));
 
 // Routes
 app.use("/api", router);
+app.use("/api", sellerAuthRouter);
 
 // health/root routes
 app.get("/", (req, res) => {
