@@ -22,7 +22,7 @@ export const useLogin = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] }); // querykey is used to cache data in browser's memory so we don't have to ask what is the data, everytime we reload or fetch same data
       toast.success("Welcome back!");
-      router.push("/dashboard");
+      router.push("/home");
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || "Login failed");
@@ -128,11 +128,12 @@ export function useResetPassword() {
 }
 
 // ─── Get Me ───────────────────────────────────────────────────────────────────
-export function useMe() {
+export function useMe(enabled: boolean = true) {
   return useQuery({
     queryKey: ["me"],
     queryFn: () => getMe().then((r) => r.data),
     retry: false,
+    enabled,
   });
 }
 

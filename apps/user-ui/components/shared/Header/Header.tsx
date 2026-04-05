@@ -14,7 +14,7 @@ import {
   Settings,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { useLogout } from "@/hooks/auth-hook";
 
@@ -61,15 +61,25 @@ function IconButton({
 
 // ─── Main Header ──────────────────────────────────────────────────────────────
 export default function Header() {
-  const { data: user, isLoading } = useMe();
-  const { mutate: logout } = useLogout();
+  const pathname = usePathname();
   const router = useRouter();
+  
+  // Check if we're on an auth page - skip useMe() query on these pages
+  const isAuthPage = pathname?.includes("/(auth)") || 
+    ["/login", "/signup", "/forgot-password", "/reset-password", "/verify-otp", "/seller-login", "/seller-register", "/verify-reset-otp"].includes(pathname || "");
+  
+  // Only query user data if NOT on auth page - use enabled option
+  const { data: user, isLoading } = useMe(!isAuthPage);
+  const { mutate: logout } = useLogout();
 
   // Separate pieces of UI state — each controls one thing
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // Don't show user-related UI on auth pages
+  const shouldShowUserSection = !isAuthPage;
 
   // Placeholder counts — replace with real hooks when you build cart/wishlist
   const cartCount = 10;
