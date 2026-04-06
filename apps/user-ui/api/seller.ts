@@ -1,4 +1,4 @@
-import { api } from "./client";
+import { sellerApi } from "./client";
 
 export type SellerRegisterInput = {
   name: string;
@@ -28,9 +28,9 @@ export type CreateShopInput = {
 };
 
 
-export const sellerRegister = (data: SellerRegisterInput) => api.post('/api/seller-register', data)
-export const sellerVerify = (data: SellerVerifyInput) => api.post('/api/seller-verify', data)
-export const sellerLogin = (data: SellerLoginInput) => api.post('/api/seller-login', data)
-export const createShop = (data: CreateShopInput) => api.post('/api/seller-create-shop', data)
-export const getSellerMe = () => api.get("/api/seller-me");
-export const sellerLogout = () => api.post('/api/seller-logout')
+export const sellerRegister = (data: SellerRegisterInput) => sellerApi.post('/seller-register', data)
+export const sellerVerify = (data: SellerVerifyInput) => sellerApi.post('/seller-verify', data)
+export const sellerLogin = (data: SellerLoginInput) => sellerApi.post('/seller-login', data)
+export const createShop = (data: CreateShopInput) => sellerApi.post('/seller-create-shop', data)
+export const getSellerMe = () => sellerApi.get("/seller-me");
+export const sellerLogout = () => sellerApi.post('/seller-logout')

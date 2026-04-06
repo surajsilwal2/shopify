@@ -1,6 +1,6 @@
-import { sellerLogin, SellerLoginInput, sellerRegister, SellerRegisterInput, sellerVerify, SellerVerifyInput } from "@/api/seller";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { redirect, useRouter } from "next/navigation";
+import { createShop, CreateShopInput, getSellerMe, sellerLogin, SellerLoginInput, sellerLogout, sellerRegister, SellerRegisterInput, sellerVerify, SellerVerifyInput } from "@/api/seller";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 // ── Step 1: Register ──────────────────────────────────────────────────────────
@@ -80,3 +80,59 @@ export const useSellerLogin = () => {
 
 // ── Create Shop (Step 2) ──────────────────────────────────────────────────────
 // Protected — only works if sellerAccessToken cookie is valid
+export const useCreateShop = () => {
+  const router = useRouter()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: CreateShopInput) => createShop(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sellerMe"] });
+      toast.success("Shop created! Let's connect Stripe.");
+      router.push("/seller/connect-stripe");
+    },
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message ||
+          error?.response?.data?.error ||
+          "Failed to create shop",
+      );
+    },
+  });
+}
+
+
+// ── Get current seller ────────────────────────────────────────────────────────
+// useQuery (not useMutation) because we're fetching, not mutating
+// enabled: false means it won't auto-fetch — call refetch() manually when needed
+// OR keep enabled: true to always fetch on mount (for protected pages)
+export const useSellerMe = () => {
+  return useQuery({
+    queryKey: ["sellerMe"],
+    queryFn: () => getSellerMe().then((res) => res.data),
+    retry: false,        // ← CRITICAL: don't retry on 401, fail fast
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+// ── Logout ────────────────────────────────────────────────────────────────────
+export const useSellerLogout = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+ 
+  return useMutation({
+    mutationFn: () => sellerLogout(),
+    onSuccess: () => {
+      // Remove cached seller data immediately
+      // Without this the header would still show seller name until cache expires
+      queryClient.removeQueries({ queryKey: ["sellerMe"] });
+      toast.success("Logged out");
+      router.push("/seller/login");
+    },
+    onError: () => {
+      // Even if logout API fails, clear local state
+      queryClient.removeQueries({ queryKey: ["sellerMe"] });
+      router.push("/seller/login");
+    },
+  });
+};
