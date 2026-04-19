@@ -63,10 +63,18 @@ function IconButton({
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
+
+  if (pathname.startsWith("/seller")) return null;
   
   // Check if we're on an auth page - skip useMe() query on these pages
-  const isAuthPage = pathname?.includes("/(auth)") || 
-    ["/login", "/signup", "/forgot-password", "/reset-password", "/verify-otp", "/seller/login", "/seller/register", "/verify-reset-otp"].includes(pathname || "");
+  const isAuthPage = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+    "/verify-otp",
+    "/verify-reset-otp",
+  ].includes(pathname);
   
   // Only query user data if NOT on auth page - use enabled option
   const { data: user, isLoading } = useMe(!isAuthPage);

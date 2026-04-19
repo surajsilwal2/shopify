@@ -1,0 +1,17 @@
+{
+  "extends": "../../packages/typescript-config/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "noEmit": true, // Next.js handles the emit
+    "outDir": "dist",
+    "strict": false,
+    "esModuleInterop": true
+  },
+  "include": [
+    "src",
+    "../../packages/shared/src/middleware",
+    "../../packages/shared/src/types/**/*.d.ts"
+  ]
+}

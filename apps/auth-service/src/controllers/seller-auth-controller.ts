@@ -118,28 +118,27 @@ export const sellerRefreshToken = async (
       return res.status(401).json({ message: "Missing refresh token" });
     }
 
-    const session = await (prisma as any).sellerSession.findFirst({
-      where: { refreshToken: oldToken },
-    });
-
-    // Reuse detection — same logic as user auth
-    if (!session || session.refreshToken !== oldToken) {
-      return res.status(401).json({ message: "Invalid refresh token" });
-    }
-
-    if (session.expiresAt < new Date()) {
-      await (prisma as any).sellerSession.delete({ where: { id: session.id } });
-      return res.status(401).json({ message: "Refresh token expired" });
-    }
-
     let decoded: { sellerId: string };
     try {
       decoded = jwt.verify(oldToken, process.env.REFRESH_SECRET!) as {
         sellerId: string;
       };
     } catch {
-      await (prisma as any).sellerSession.delete({ where: { id: session.id } });
       return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    const session = await prisma.sellerSession.findFirst({
+      where: { sellerId: decoded.sellerId },
+      orderBy: { expiresAt: "desc" },
+    });
+    // Reuse detection — same logic as user auth
+    if (!session) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    if (session.expiresAt < new Date()) {
+      await (prisma as any).sellerSession.delete({ where: { id: session.id } });
+      return res.status(401).json({ message: "Refresh token expired" });
     }
 
     const newAccessToken = jwt.sign(
