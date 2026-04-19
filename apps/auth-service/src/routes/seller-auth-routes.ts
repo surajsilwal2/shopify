@@ -6,6 +6,7 @@ import {
   createShop,
   getSellerMe,
   sellerLogout,
+  sellerRefreshToken,
  
 } from "../controllers/seller-auth-controller.js";
 
@@ -25,7 +26,7 @@ router.post(
 );
 router.post("/seller-verify", createRoute(sellerVerifyContract, sellerVerify));
 router.post("/seller-login", createRoute(sellerLoginContract, sellerLogin));
-// router.post("/seller-refresh-token", sellerRefreshToken);
+router.post("/seller-refresh-token", sellerRefreshToken);
 
 // ── Protected routes — must have valid sellerAccessToken cookie ───────────────
 router.post(

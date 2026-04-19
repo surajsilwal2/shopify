@@ -30,6 +30,7 @@ app.get("/gateway-health", (req, res) => {
 });
 
 app.use("/", proxy("http://localhost:6001"));
+app.use("/api/products", proxy("http://localhost:4002"));
 
 
 const port = process.env.PORT || 8080;

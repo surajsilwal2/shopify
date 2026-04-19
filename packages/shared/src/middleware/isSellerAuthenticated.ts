@@ -20,6 +20,7 @@ export const isSellerAuthenticated = (
       sellerId: string;
       role: string;
     };
+    console.log("decoded:", decoded);
 
     // Now req.seller is available in every route handler after this middleware
     // TypeScript knows about this because of express.d.ts above

@@ -50,6 +50,7 @@ model Seller {
   sessions  SellerSession[]
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
+  products  Product[]
 }
 
 model Shop {
@@ -69,6 +70,7 @@ model Shop {
   reviews      ShopReview[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  products     Product[]
 }
 
 model ShopReview {
@@ -93,4 +95,44 @@ model SellerSession {
   expiresAt    DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Product {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String
+  price         Float
+  discountPrice Float? // optional sale price
+  category      String
+  tags          String[] // ["electronics", "wireless", "headphones"]
+  stock         Int             @default(0)
+  sold          Int             @default(0) // track how many sold
+  rating        Float           @default(0)
+  images        ProductImage[]
+  seller        Seller          @relation(fields: [sellerId], references: [id])
+  sellerId      String          @db.ObjectId
+  shop          Shop            @relation(fields: [shopId], references: [id])
+  shopId        String          @db.ObjectId
+  reviews       ProductReview[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model ProductImage {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  url       String
+  fileId    String // for deletion from cloudinary/imagekit
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+}
+
+model ProductReview {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating    Int
+  comment   String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String   @db.ObjectId
+  userId    String   @db.ObjectId // loose reference — no direct relation
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
